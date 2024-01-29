@@ -126,21 +126,25 @@ def main():
 }
 
     
-
-    # Evaluasi aturan dan perbarui fakta
+# Evaluasi aturan dan perbarui fakta
     index = 1
 
     for key, value in dental_symptoms.items():
-        user_input = input(f"Apakah anda mengalami {value}. Enter 'y' or 'n': ")
+        while True:
+            user_input = input(f"Apakah anda mengalami {value}. Enter 'y' or 'n': ")
+            if user_input.lower() == 'y' or user_input.lower() == 'n':
+                break
+            else:
+                print("Masukkan tidak valid. Harap myasukkan 'y' untuk ya atau 'n' untuk tidak.")
+
         if user_input.lower() == 'y':
-        # Menggunakan f-string untuk membuat kunci yang dinamis
-           dental_facts.update({f'Q{index}': dental_symptoms[f'Q{index}']})
-    # Menambahkan nilai index setiap loop
+            dental_facts.update({f'Q{index}': dental_symptoms[f'Q{index}']})
+        # Menambahkan nilai index setiap loop
         index += 1
 
     # Perhitungan bobot berdasarkan fakta yang benilai True
     rule_matched = True
-     # Inisialisasi total bobot untuk semua kondisi
+    # Inisialisasi total bobot untuk semua kondisi
     for rule_number, rule_data in dental_rules.items():
         conditions = rule_data['conditions']
         conclusion = rule_data['conclusion']
@@ -150,9 +154,7 @@ def main():
             print(f"Anda mungkin mengalami: {disease_name}")
             print(f"Tingkat keparahan {disease_name}: {total_bobot_conditions}")
             rule_matched = False
-    if(rule_matched) :
+    if rule_matched:
         print("Tidak ada diagnosis yang sesuai dengan gejala yang Anda alami.")
 
-
-    
 main()
