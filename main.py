@@ -131,35 +131,28 @@ def main():
     index = 1
 
     for key, value in dental_symptoms.items():
-        user_input = input(f"Apakah anda mengalami {value}. Enter 'ya' or 'tidak': ")
-        if user_input.lower() == 'ya':
+        user_input = input(f"Apakah anda mengalami {value}. Enter 'y' or 'n': ")
+        if user_input.lower() == 'y':
         # Menggunakan f-string untuk membuat kunci yang dinamis
-            dental_facts[f'Q{index}'] = True
-        elif user_input.lower() == 'tidak':
-            dental_facts[f'Q{index}'] = False
+           dental_facts.update({f'Q{index}': dental_symptoms[f'Q{index}']})
     # Menambahkan nilai index setiap loop
         index += 1
 
-    total_bobot = 0  # Inisialisasi total bobot
-    gejala_dialami = []  # Inisialisasi daftar gejala yang dialami
-
     # Perhitungan bobot berdasarkan fakta yang benilai True
-    for key, value in dental_facts.items():
-        if value:  # Cek apakah fakta bernilai True
-            total_bobot += bobot_gejala[key]  # Tambahkan bobot ke total_bobot
-            gejala_dialami.append(dental_symptoms[key])  # Tambahkan gejala ke daftar gejala yang dialami
-
-    
-    print(f"Total bobot berdasarkan fakta yang benilai True: {total_bobot}")
-
-    for key, rule_value in dental_rules.items():
-        if evaluate_rule(rule_value, dental_facts):
-            print(f"Anda mungkin mengalami: {dental_diseases[rule_value['conclusion']]}")
-            print(f"Dengan Tingkat Keparahan: {total_bobot}%")
-
-            break
-    else:
+    rule_matched = True
+     # Inisialisasi total bobot untuk semua kondisi
+    for rule_number, rule_data in dental_rules.items():
+        conditions = rule_data['conditions']
+        conclusion = rule_data['conclusion']
+        if all(dental_symptoms[condition] in dental_facts.values() for condition in conditions):
+            total_bobot_conditions = sum(bobot_gejala.get(condition, 0) for condition in conditions)
+            disease_name = dental_diseases[conclusion]
+            print(f"Anda mungkin mengalami: {disease_name}")
+            print(f"Tingkat keparahan {disease_name}: {total_bobot_conditions}")
+            rule_matched = False
+    if(rule_matched) :
         print("Tidak ada diagnosis yang sesuai dengan gejala yang Anda alami.")
+
 
     
 main()
